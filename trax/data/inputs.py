@@ -374,6 +374,30 @@ def FilterByLength(max_length,  # pylint: disable=invalid-name
   return filtered
 
 
+def FilterEmptyExamples(axes=None):  # pylint: disable=invalid-name
+  """Filters empty examples.
+
+  Filters any example that has an array of size (0,) (if axes=None).
+  Alternatively, checks only axes provided in `axes' list.
+
+  Args:
+    axes: list of indices to check, if None, all of them.
+  Returns:
+    Function filtering empty examples.
+  """
+  def _filter_examples(generator, axes=None):
+    for example in generator:
+      correct = True
+      for i, unused_tuple_element in enumerate(example):
+        if axes is None or i in axes:
+          if example[i].shape == (0,):
+            correct = False
+            break
+      if correct:
+        yield example
+  return lambda g: _filter_examples(g, axes)
+
+
 def ConcatenateToLMInput(pad_to_length=None):  # pylint: disable=invalid-name
   """Prepares the input needed for training of Language Models.
 
