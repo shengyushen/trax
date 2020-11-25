@@ -52,7 +52,7 @@ class Agent:
                n_interactions_per_epoch=None,
                n_eval_episodes=0,
                eval_steps=None,
-               eval_temperatures=(0.0,),
+               eval_temperatures=(0.0, 0.5),
                only_eval=False,
                output_dir=None,
                timestep_to_np=None):
@@ -72,7 +72,7 @@ class Agent:
         (defaults to task.max_steps).
       eval_temperatures: we always train with temperature 1 and evaluate with
         temperature specified in the eval_temperatures list
-        (defaults to [0.0])
+        (defaults to [0.0, 0.5])
       only_eval: If set to True, then trajectories are collected only for
         for evaluation purposes, but they are not recorded.
       output_dir: Path telling where to save outputs such as checkpoints.
