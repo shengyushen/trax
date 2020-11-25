@@ -47,22 +47,44 @@ class DecodingTimingTest(test.TestCase):
   def test_autoregressive_sample_reformer2_timing(self):
     max_len = 16
     all_settings = [
-        {'attn_sparsity': 64, 'ff_sparsity': (256, 32),
+        # small models: 1 encoder layer, 4 decoder layers
+        {'encoder_layers': 1, 'decoder_layers': 4, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 0,
          'attn': (tl.MultiplicativeCausalAttention, {})},
-        {'attn_sparsity': 64, 'ff_sparsity': (256, 32),
+        {'encoder_layers': 1, 'decoder_layers': 4, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 4,
+         'attn': (tl.MultiplicativeCausalAttention, {})},
+        {'encoder_layers': 1, 'decoder_layers': 4, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 0,
          'attn': (tl.ModularCausalAttention, {})},
-        {'attn_sparsity': 64, 'ff_sparsity': (256, 32),
+        {'encoder_layers': 1, 'decoder_layers': 4, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 0,
          'attn': (tl.ConvCausalAttention, {})},
-        {'attn_sparsity': 64, 'ff_sparsity': (256, 32),
+        {'encoder_layers': 1, 'decoder_layers': 4, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 0,
          'attn': (tl.MultiplicativeConvCausalAttention,
                   {'length_kernel_size': 1})},
-        {'attn_sparsity': 64, 'ff_sparsity': (256, 32),
+        {'encoder_layers': 1, 'decoder_layers': 4, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 0,
          'attn': (tl.MultiplicativeConvCausalAttention,
                   {'length_kernel_size': 3})},
+
+        # big models: 6 encoder layers, 36 decoder layers
+        {'encoder_layers': 6, 'decoder_layers': 36, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 0,
+         'attn': (tl.MultiplicativeConvCausalAttention,
+                  {'length_kernel_size': 1})},
+        {'encoder_layers': 6, 'decoder_layers': 36, 'vocab': 32000,
+         'attn_sparsity': 64, 'ff_sparsity': (256, 32), 'loss_sparsity': 4,
+         'attn': (tl.MultiplicativeConvCausalAttention,
+                  {'length_kernel_size': 1})},
     ]
     messages = []
 
     for settings in all_settings:
+      vocab_size = settings['vocab']
+      n_encoder_layers = settings['encoder_layers']
+      n_decoder_layers = settings['decoder_layers']
 
       def _self_attention_fn():
         return functools.partial(
@@ -81,15 +103,20 @@ class DecodingTimingTest(test.TestCase):
           mode='predict',
           d_model=96*96,
           d_ff=64*1024,
-          dropout=0.05,
+          dropout=0.1,
           max_len=max_len,
-          n_heads=64,
-          n_encoder_layers=2,
-          n_decoder_layers=2,
+          n_heads=96,
+          n_encoder_layers=n_encoder_layers,
+          n_decoder_layers=n_decoder_layers,
           encoder_attention_type=_self_attention_fn(),
           encoder_decoder_attention_type=_causal_attention_fn(),
-          input_vocab_size=4,
+          input_vocab_size=vocab_size,
           ff_sparsity=settings['ff_sparsity'],
+          ff_use_sru=(1, 64),
+          ff_dropout=0.1,
+          ff_chunk_size=1024,
+          attention_chunk_size=1,
+          loss_sparsity=settings['loss_sparsity'],
           axial_pos_shape=None,
           use_bfloat16=True,
       )
@@ -112,11 +139,10 @@ class DecodingTimingTest(test.TestCase):
         if counter >= 14:
           break
 
-      # We print 5* time for 10 tokens, @2 layers this is ~1 token @ 100 layers.
       message = (
           ('\n\nParams: %d Settings: %s\n'
-           'Time for 5x10 tokens (~1tok @100): %.4f s\n\n\n')
-          % (size_of_model(pred_model), settings, 5*total_time))
+           'Time for 10 tokens: %.4f s\n\n\n')
+          % (size_of_model(pred_model), settings, total_time))
       messages.append(message)
       print(message)
       # self.assertLess(total_time, 20.0)  # If it's > 20s, it's some bug.
