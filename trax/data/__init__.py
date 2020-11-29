@@ -44,6 +44,6 @@ Shuffle = data_configure(inputs.Shuffle)
 shuffle = inputs.shuffle
 TFDS = data_configure(tf_inputs.TFDS)
 Tokenize = data_configure(tf_inputs.Tokenize)
-tokenize = tf_inputs.tokenize
+tokenize = tf_inputs.tokenize  # trax/data/tf_inputs.py
 detokenize = tf_inputs.detokenize
 vocab_size = tf_inputs.vocab_size

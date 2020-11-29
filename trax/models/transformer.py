@@ -283,7 +283,8 @@ def Transformer(input_vocab_size,
 
     - output: rank 3 tensor representing a batch of log-probability
       distributions for each sequence position over possible token IDs;
-      shape is (batch_size, sequence_length, `vocab_size`).
+      shape is (batch_size, sequence_length, `vocab_size`). SSY so each tensor 
+      element is a distribution?
 
   An example use would be to translate (tokenized) sentences from English to
   German.
@@ -319,9 +320,10 @@ def Transformer(input_vocab_size,
     A Transformer model as a layer that maps from a source-target tokenized
     text pair to activations over a vocab set.
   """
+  print("SSY still using built in instead of installed version")
   def Embedder(vocab_size):  # tokens --> vectors
     return [
-        tl.Embedding(vocab_size, d_model),
+        tl.Embedding(vocab_size, d_model), # SSY translating the input id into embedding vector of length d_model
         tl.Dropout(rate=dropout, shared_axes=dropout_shared_axes, mode=mode),
     ]
 

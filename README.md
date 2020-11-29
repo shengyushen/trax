@@ -1,3 +1,58 @@
+#nvidia-docker run -it --ipc=host -v /root/ssy:/root/ssy --name ssyTrax nvidia/cuda:11.0-cudnn8-devel-ubuntu18.04
+nvidia-docker run -it --ipc=host -v /root/ssy:/root/ssy --name ssyTrax10 pytorch/pytorch:1.4-cuda10.1-cudnn7-devel
+nvidia-docker start ssyTrax10
+nvidia-docker exec -it ssyTrax10 /bin/bash
+
+source /root/ssy/ai/training/env.sh
+apt update
+apt install -y python3 vim git python3-pip
+
+# installing gin
+# directly using pip will fail
+# I need to install in from git
+cd ..
+git clone https://github.com/google/gin-config
+cd gin-config
+python -m setup.py install
+cd ../trax
+#pip3 install gin-config 
+
+
+# to avoid version miss matching between jax and jaxlib
+pip3 install --upgrade pip
+pip3 install --upgrade jax jaxlib
+
+pip3 install numpy
+
+pip3 install absl-py
+pip3 install jax
+pip3 install jaxlib
+
+
+
+pip3 install tensorflow
+pip3 install tensorflow_datasets
+pip3 install tensorflow-gpu
+
+pip3 install t5 matplotlib
+
+
+# installing gsutils, sudo may not be need in docker, and also should be remove outside docker because I am already in root and it will disable my setting
+# https://cloud.google.com/storage/docs/gsutil_install#deb
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+apt-get install -y apt-transport-https ca-certificates gnupg
+# I may download first outside docker and then import in docker
+wget https://packages.cloud.google.com/apt/doc/apt-key.gpg --no-check-certificate
+apt-key --keyring /usr/share/keyrings/cloud.google.gpg add apt-key.gpg
+
+apt-get update && apt-get install google-cloud-sdk
+
+# get files from gs
+gsutil  cp gs://trax-ml/models/translation/ende_wmt32k.gin .
+gsutil  cp gs://trax-ml/models/translation/ende_wmt32k.pkl.gz .
+
+
+
 # Trax &mdash; Deep Learning with Clear Code and Speed
 
 ![train tracks](https://images.pexels.com/photos/461772/pexels-photo-461772.jpeg?dl&fit=crop&crop=entropy&w=32&h=21)
