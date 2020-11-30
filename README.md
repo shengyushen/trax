@@ -48,8 +48,7 @@ apt-key --keyring /usr/share/keyrings/cloud.google.gpg add apt-key.gpg
 apt-get update && apt-get install google-cloud-sdk
 
 # get files from gs
-gsutil  cp gs://trax-ml/models/translation/ende_wmt32k.gin .
-gsutil  cp gs://trax-ml/models/translation/ende_wmt32k.pkl.gz .
+gsutil  cp gs://trax-ml/ .
 
 
 
