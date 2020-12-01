@@ -91,6 +91,7 @@ print("Number of tokens:", IDS.shape[0])
 
 # Set up the data pipeline.
 def my_inputs(n_devices):
+  print("SSY n_devices "+str(n_devices))
   while True:
     inputs = []
     mask = []
@@ -104,7 +105,8 @@ def my_inputs(n_devices):
     inputs = np.stack(inputs)
     mask = np.stack(mask)
     yield (inputs, inputs, mask)
-
+# SSY /opt/conda/lib/python3.7/site-packages/jax/lib/xla_bridge.py some where
+# SSY /opt/conda/lib/python3.7/site-packages/trax/fastmath/ops.py
 print("(device count, tokens per device) =", next(my_inputs(trax.fastmath.device_count()))[0].shape)
 
 # Configure hyperparameters.
@@ -198,7 +200,7 @@ trainer = trax.supervised.Trainer(
     loss_fn=trax.layers.CrossEntropyLoss(),
     optimizer=trax.optimizers.Adam,
     lr_schedule=trax.lr.multifactor(),
-    inputs=trax.data.inputs.Inputs(my_inputs),
+    inputs=trax.data.inputs.Inputs(my_inputs), # SSY Inputs is class defined in /opt/conda/lib/python3.7/site-packages/trax/data/inputs.py
     output_dir=output_dir)
 
 # Run one training step, to make sure the model fits in memory.
@@ -215,7 +217,9 @@ trainer.train_epoch(n_steps=1, n_eval_steps=1)
 # steps and with minimal regularization. However, we can still sample from it to
 # see what it learns.
 trainer.train_epoch(n_steps=9, n_eval_steps=1)
-for _ in range(59):
+#for _ in range(59):
+for i in range(59):
+  print("iteration "+str(i))
   trainer.train_epoch(n_steps=10, n_eval_steps=1)
 
 ## Sample from the model"

@@ -351,6 +351,7 @@ def dataset_as_numpy(*args, **kwargs):
 
 def device_count(*args, **kwargs):
   """Return the number of accelerators (GPUs or TPUs) available."""
+  print("SSY device_count")
   return backend()['device_count'](*args, **kwargs)
 
 
@@ -382,6 +383,7 @@ def set_backend(name):
 
 def _get_backend_from_string(name_str):
   # name is a string.
+  print("SSY _get_backend_from_string")
   for backend_ in Backend:
     if backend_.value == name_str:
       return _backend_dict[backend_]
@@ -391,6 +393,7 @@ def _get_backend_from_string(name_str):
 @gin.configurable()
 def backend(name='jax'):
   """Returns the backend used to provide fastmath ops ('tf' or 'jax')."""
+  print("SSY : backend")
   if override_backend:
     return _get_backend_from_string(override_backend)
 
