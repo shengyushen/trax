@@ -1,3 +1,14 @@
+# installing nvidia docker
+# https://github.com/NVIDIA/nvidia-docker
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+  && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+  && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+apt update
+apt install -y nvidia-docker2
+systemctl restart docker
+docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
+
+
 #nvidia-docker run -it --ipc=host -v /root/ssy:/root/ssy --name ssyTrax nvidia/cuda:11.0-cudnn8-devel-ubuntu18.04
 nvidia-docker run -it --ipc=host -v /root/ssy:/root/ssy --name ssyTrax10 pytorch/pytorch:1.4-cuda10.1-cudnn7-devel
 nvidia-docker start ssyTrax10
