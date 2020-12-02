@@ -20,21 +20,9 @@ cd ../trax
 
 # to avoid version miss matching between jax and jaxlib
 pip3 install --upgrade pip
-pip3 install --upgrade jax jaxlib
-
-pip3 install numpy
-
-pip3 install absl-py
-pip3 install jax
-pip3 install jaxlib
-
-
-
-pip3 install tensorflow
-pip3 install tensorflow_datasets
-pip3 install tensorflow-gpu
-
-pip3 install t5 matplotlib
+pip3 install --upgrade jax jaxlib numpy absl-py tensorflow tensorflow_datasets tensorflow-gpu t5 matplotlib
+# some times python3 may not find these libs, because there may be multiple python version, and pip3 and python3 are in diff version
+# normally we should use python3 -m pip instead of directly using pip3 
 
 
 # installing gsutils, sudo may not be need in docker, and also should be remove outside docker because I am already in root and it will disable my setting
