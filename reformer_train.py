@@ -58,7 +58,7 @@ from sentencepiece import SentencePieceProcessor
 
 # Import a copy of \"Crime and Punishment\ by Fyodor Dostoevsky
 #with GFile('gs://trax-ml/reformer/crime-and-punishment-2554.txt') as f:
-with GFile('../../../trax-ml/reformer/crime-and-punishment-2554.txt') as f:
+with GFile('trax-ml/reformer/crime-and-punishment-2554.txt') as f:
   text = f.read()
 
 # The file read above includes metadata and licensing information.
@@ -75,7 +75,7 @@ text = text[start:end].strip()
 
 TOKENIZER = SentencePieceProcessor()
 #TOKENIZER.load('cp.320.model')
-TOKENIZER.load('../../../trax-ml/reformer/cp.320.model')
+TOKENIZER.load('trax-ml/reformer/cp.320.model')
 
 # Tokenize
 IDS = TOKENIZER.EncodeAsIds(text)
@@ -107,7 +107,8 @@ def my_inputs(n_devices):
     yield (inputs, inputs, mask)
 # SSY /opt/conda/lib/python3.7/site-packages/jax/lib/xla_bridge.py some where
 # SSY /opt/conda/lib/python3.7/site-packages/trax/fastmath/ops.py
-print("(device count, tokens per device) =", next(my_inputs(trax.fastmath.device_count()))[0].shape)
+#print("calling my_inputs before parse_config")
+#print("(device count, tokens per device) =", next(my_inputs(trax.fastmath.device_count()))[0].shape)
 
 # Configure hyperparameters.
 gin.parse_config("""
