@@ -123,6 +123,7 @@ gin.parse_config("""
 train.model = @trax.models.ReformerLM
 # Our model will have 6 layers, alternating between the LSH attention proposed
 # in the Reformer paper and local attention within a certain context window.
+# SSY interleaved LSH and self attention? which means we still need to depend on self attention
 n_layers = 6
 attn_type = [
   @trax.layers.SelfAttention,
@@ -229,7 +230,7 @@ for i in range(59):
 # helps with quality. We can even increase the number of hashing rounds at
 # evaluation time only.
 
-gin.parse_config("LSHSelfAttention.n_hashes = 4")
+gin.parse_config("LSHSelfAttention.n_hashes = 4") # SSY hash 4 times
 
 # Load the trained Reformer in 'predict' mode
 model = trax.models.ReformerLM(mode='predict')

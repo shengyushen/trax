@@ -477,7 +477,7 @@ class EfficientAttentionBase(base.Layer):
     raise NotImplementedError(
         'Fast inference is not implemented for this attention type.')
 
-  def forward(self, inputs):
+  def forward(self, inputs):  # SSY directly from layer
     """Computes this layer's output as part of a forward pass through the model.
 
     Args:
@@ -523,7 +523,7 @@ class EfficientAttentionBase(base.Layer):
               weights=single_weights, rng=rng,
               state=single_state, update_state=True)
         else:
-          single_out, single_new_state = self.forward_unbatched(
+          single_out, single_new_state = self.forward_unbatched( # SSY calling forward_unbatched
               *single_inputs, weights=single_weights, rng=rng,
               state=single_state, update_state=True)
         new_state.append(single_new_state)
@@ -1176,7 +1176,7 @@ class LSHSelfAttention(SelfAttention):
               ):
     """Construct an LSH self-attention layer."""
     super().__init__(
-        n_heads=n_heads, d_qk=d_qk, d_v=d_v, share_qk=True,
+        n_heads=n_heads, d_qk=d_qk, d_v=d_v, share_qk=True, # SSY sharing qk here
         causal=causal,
         masked=masked,
         chunk_len=chunk_len,
@@ -1549,7 +1549,7 @@ class LSHFF(base.Layer):
     self._kernel_initializer = kernel_initializer
     self._bias_initializer = bias_initializer
 
-  def forward(self, x):
+  def forward(self, x): # SSY it have native forward because it is directly direived from 
     """Executes this layer as part of a forward pass through the model.
 
     Args:

@@ -86,7 +86,7 @@ class RandomBackend:
     return backend()['random_bernoulli'](*args, **kwargs)
 
 
-random = RandomBackend()
+random = RandomBackend() # SSY this is fastmath.random
 
 
 def logsumexp(*args, **kwargs):

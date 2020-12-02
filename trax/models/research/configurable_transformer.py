@@ -127,7 +127,7 @@ def ApplyAttentionLayer(attention_type, d_model, n_heads, d_qk, d_v, causal,
                         attention_chunk_size, mode):
   """Runs the supplied attention layer."""
   try:
-    attention = attention_type(
+    attention = attention_type( # SSY attention_type is defined in gin by reformer_train.py
         n_heads=n_heads,
         d_qk=d_qk,
         d_v=d_v,
