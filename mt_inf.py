@@ -17,7 +17,9 @@ model.init_from_file('./trax-ml/models/translation/ende_wmt32k.pkl.gz',
 
 # Tokenize a sentence.
 #sentence = 'It is nice to learn new things today!'
-sentence = 'shengyu shen is an engineer'
+sentence = 'shengyu shen is an engineer from China working on computer science'
+print('FROM ')
+print(sentence)
 # SSY trax/data/tf_inputs.py
 tokenized = list(trax.data.tokenize(iter([sentence]),  # Operates on streams.
                                     # vocab_dir='gs://trax-ml/vocabs/',
@@ -35,4 +37,5 @@ translation = trax.data.detokenize(tokenized_translation,
                                    # vocab_dir='gs://trax-ml/vocabs/',
                                    vocab_dir='./trax-ml/vocabs/',
                                    vocab_file='ende_32k.subword')
+print('TO ')
 print(translation)
